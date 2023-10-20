@@ -19,6 +19,7 @@ export default function Home() {
   const [count, setCount] = useState<number>(0);
   const [choiseOne, setChoiseOne] = useState<null | CardsType>(null);
   const [choiseTwo, setChoiseTwo] = useState<null | CardsType>(null);
+  const [disabled,setDisabled] = useState<boolean>(false);
   function suffleCards() {
     const suffleCard = [...CardImages, ...CardImages]
       .sort(() => Math.random() - 0.5)
@@ -31,6 +32,8 @@ export default function Home() {
      * 3)Then map() each img and add 'id'
      * Depending on Math.random() 'id' data is sorted by sort() method
      */
+    setChoiseOne(null);
+    setChoiseTwo(null);
     setCount(0);
   }
   const handleChoise = ({ card }: { card: CardsType }) => {
@@ -39,10 +42,12 @@ export default function Home() {
   const resetTurn = () => {
     setChoiseOne(null);
     setChoiseTwo(null);
-    setCount((pre) => pre++);
+    setCount((pre) => pre + 1);
+    setDisabled(false);
   };
   useEffect(() => {
     if (choiseOne && choiseTwo) {
+      setDisabled(true);
       if (choiseOne.src == choiseTwo.src) {
         setCards(pre=>{
           return pre.map((card)=>{
@@ -55,12 +60,13 @@ export default function Home() {
         })
         resetTurn();
       } else {
-        console.log("do not match");
-        resetTurn();
+        setTimeout(()=>resetTurn(),1000)
       }
     }
   }, [choiseOne, choiseTwo]);
-  console.log(cards);
+  useEffect(()=>{
+    suffleCards();
+  },[]);
   return (
     <main className="magic_game container mx-auto">
       <div className="header text-center my-5 leading-10 space-y-5">
@@ -74,23 +80,26 @@ export default function Home() {
         <div className="gird_cards grid grid-cols-4 w-[30%] mx-auto gap-6 place-items-center">
           {cards.map((card) => (
             <div className="card gird" key={card.id}>
-              <div className="[&>img]:border-2 [&>img]:border-white [&>img]:rounded-md">
+              <div className={`[&>img]:border-2 [&>img]:border-white [&>img]:rounded-md ${(card == choiseOne || card == choiseTwo || card.matched) ? 'flipped' : ''}`}>
                 <Image
                   src={card.src as string}
-                  width={300}
+                  className="front"
+                  width={100}
                   height={100}
                   alt="card front"
                 />
                 <Image
                   src={"/img/cover.png"}
-                  width={300}
+                  className="back"
+                  width={100}
                   height={100}
                   alt="card back"
-                  onClick={() => handleChoise({ card })}
+                  onClick={() =>{!disabled && handleChoise({ card })}}
                 />
               </div>
             </div>
           ))}
+          <p>Turns: {count}</p>
         </div>
       </div>
     </main>
