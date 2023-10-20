@@ -22,8 +22,8 @@ export default function Home() {
   const [disabled,setDisabled] = useState<boolean>(false);
   function suffleCards() {
     const suffleCard = [...CardImages, ...CardImages]
-      .sort(() => Math.random() - 0.5)
-      .map((card) => ({ ...card, id: Math.random() }));
+      .sort(() => Math.floor(Math.random() * 100))
+      .map((card) => ({ ...card, id:  Math.floor(Math.random() * 100)}));
     setCards(suffleCard);
     /**
      * Suffling
