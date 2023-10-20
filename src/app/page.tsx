@@ -42,7 +42,7 @@ export default function Home() {
   const resetTurn = () => {
     setChoiseOne(null);
     setChoiseTwo(null);
-    setCount((pre) => pre + 1);
+    setCount(pre => pre + 1);
     setDisabled(false);
   };
   useEffect(() => {
